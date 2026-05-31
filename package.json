@@ -1,0 +1,24 @@
+{
+  "name": "pa-node",
+  "version": "1.0.0",
+  "description": "Sistema de autenticación con OTP y reconocimiento facial - Node.js",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "connect-session-sequelize": "^7.1.7",
+    "dotenv": "^16.4.7",
+    "ejs": "^3.1.10",
+    "express": "^4.18.3",
+    "express-session": "^1.18.0",
+    "mysql2": "^3.9.7",
+    "nodemailer": "^6.9.13",
+    "sequelize": "^6.37.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}

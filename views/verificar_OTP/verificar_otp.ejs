@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Verificar OTP</title>
+  <link rel="stylesheet" href="/css/verificar_otp.css">
+  <link rel="stylesheet" href="/css/auth-experience.css">
+</head>
+<body class="dash-page auth-experience">
+  <header class="dash-topbar">
+    <div class="dash-topbar-brand">
+      <span class="dash-topbar-logo" aria-hidden="true">PA</span>
+      <div>
+        <span class="dash-topbar-title">Verificación OTP</span>
+        <span class="dash-topbar-sub">Código de un solo uso</span>
+      </div>
+    </div>
+    <div class="dash-topbar-actions">
+      <a href="/" class="dash-topbar-link">Inicio sesión</a>
+    </div>
+  </header>
+
+  <main class="auth-main auth-main--otp">
+    <div class="otp-card">
+      <% if (toast_ok) { %>
+      <div class="otp-mail-notice" role="status">
+        <span class="otp-mail-notice__mark" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+          </svg>
+        </span>
+        <p class="otp-mail-notice__text"><%= toast_ok %></p>
+      </div>
+      <% } %>
+
+      <p class="otp-kicker">Paso final</p>
+      <h3>Verificación de seguridad</h3>
+      <p>Ingresa el código de 6 dígitos enviado a tu correo.</p>
+      <form method="POST" action="/verificar">
+        <input type="text" name="otp" maxlength="6" placeholder="000000" required inputmode="numeric" pattern="[0-9]{6}" autocomplete="one-time-code">
+        <button type="submit">Verificar</button>
+      </form>
+    </div>
+
+    <% if (toast_warn) { %>
+      <div class="login-toast" role="alert" style="position:fixed;bottom:1.25rem;left:50%;transform:translateX(-50%);"><%= toast_warn %></div>
+    <% } %>
+  </main>
+</body>
+</html>

@@ -1,0 +1,151 @@
+/* Variables, tipografía, página base y barra superior (compartido con dashboard y auth) */
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap");
+
+:root {
+  --dash-bg0: #0f0f12;
+  --dash-bg1: #16161c;
+  --dash-surface: rgba(255, 255, 255, 0.04);
+  --dash-surface2: rgba(255, 255, 255, 0.07);
+  --dash-border: rgba(255, 255, 255, 0.08);
+  --dash-text: #f4f4f5;
+  --dash-muted: #a1a1aa;
+  --dash-accent: #8b5cf6;
+  --dash-accent-dim: rgba(139, 92, 246, 0.25);
+  --dash-green: #34d399;
+  --dash-amber: #fbbf24;
+  --dash-danger: #f87171;
+  --dash-radius: 16px;
+  --dash-radius-sm: 10px;
+  --dash-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+  --dash-glow: 0 0 40px rgba(139, 92, 246, 0.12);
+}
+
+.dash-page {
+  font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+  margin: 0;
+  min-height: 100vh;
+  color: var(--dash-text);
+  display: flex;
+  flex-direction: column;
+  background: var(--dash-bg0);
+  background-image:
+    radial-gradient(ellipse 120% 80% at 50% -20%, rgba(139, 92, 246, 0.22), transparent),
+    radial-gradient(ellipse 80% 50% at 100% 50%, rgba(52, 211, 153, 0.06), transparent),
+    linear-gradient(180deg, var(--dash-bg1) 0%, var(--dash-bg0) 45%);
+}
+
+.dash-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  background: rgba(22, 22, 28, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--dash-border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.dash-topbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.dash-topbar-logo {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--dash-accent), #6366f1);
+  box-shadow: var(--dash-glow);
+  display: grid;
+  place-items: center;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.dash-topbar-title {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--dash-text);
+}
+
+.dash-topbar-sub {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--dash-muted);
+  margin-top: 0.15rem;
+  letter-spacing: 0.02em;
+}
+
+.dash-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.dash-topbar-link {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--dash-muted);
+  text-decoration: none;
+  padding: 0.5rem 0.9rem;
+  border-radius: var(--dash-radius-sm);
+  border: 1px solid var(--dash-border);
+  background: var(--dash-surface);
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+
+.dash-topbar-link:hover {
+  color: var(--dash-text);
+  border-color: var(--dash-accent-dim);
+  background: var(--dash-surface2);
+}
+
+.dash-topbar-link--primary {
+  color: #fff;
+  background: linear-gradient(135deg, #7c3aed, var(--dash-accent));
+  border-color: transparent;
+  box-shadow: 0 4px 14px rgba(139, 92, 246, 0.35);
+}
+
+.dash-topbar-link--primary:hover {
+  color: #fff;
+  filter: brightness(1.08);
+  border-color: transparent;
+}
+
+/* Área principal en login / registro / OTP */
+.auth-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem 1rem 2.5rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 640px) {
+  .dash-topbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .dash-topbar-actions {
+    justify-content: stretch;
+  }
+
+  .dash-topbar-link {
+    text-align: center;
+    flex: 1;
+  }
+}

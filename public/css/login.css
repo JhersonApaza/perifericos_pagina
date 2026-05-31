@@ -1,0 +1,410 @@
+@import url("theme.css");
+
+.login-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  align-items: center;
+  width: 100%;
+  max-width: 400px;
+}
+
+.login-box {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  max-width: 400px;
+  box-sizing: border-box;
+  padding: 1.65rem 1.5rem 1.5rem;
+  background: linear-gradient(145deg, var(--dash-surface2) 0%, var(--dash-surface) 100%);
+  border: 1px solid var(--dash-border);
+  border-radius: var(--dash-radius);
+  box-shadow: var(--dash-shadow);
+}
+
+.login-box form {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.login-box::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--dash-accent), #6366f1);
+  border-radius: var(--dash-radius) var(--dash-radius) 0 0;
+  pointer-events: none;
+}
+
+.login-face-panel {
+  width: 100%;
+  max-width: 400px;
+}
+
+.login-face-panel[hidden] {
+  display: none !important;
+}
+
+.login-box--classic[hidden] {
+  display: none !important;
+}
+
+.btn-face-back {
+  display: block;
+  width: 100%;
+  margin: 0 0 1rem;
+  padding: 0.45rem 0.5rem;
+  box-sizing: border-box;
+  border: none;
+  border-radius: var(--dash-radius-sm);
+  background: transparent;
+  color: var(--dash-muted);
+  font-family: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  transition: color 0.2s, background 0.2s;
+}
+
+.btn-face-back:hover {
+  color: var(--dash-text);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.btn-face-back:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.25);
+}
+
+.login-box--face::before {
+  background: linear-gradient(90deg, var(--dash-green), #22d3ee);
+}
+
+.login-box--face .login-kicker {
+  color: var(--dash-green);
+}
+
+.login-box > * {
+  position: relative;
+  z-index: 1;
+}
+
+.login-kicker {
+  margin: 0 0 0.35rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--dash-accent);
+  text-align: center;
+}
+
+.login-box h2 {
+  text-align: center;
+  margin: 0 0 0.35rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--dash-text);
+}
+
+.login-hint {
+  font-size: 0.8125rem;
+  color: var(--dash-muted);
+  margin: 0 0 1rem;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.login-hint strong {
+  color: #d4d4d8;
+}
+
+.face-scan-wrap {
+  position: relative;
+  width: 100%;
+  margin-bottom: 0.65rem;
+  border-radius: var(--dash-radius-sm);
+  overflow: hidden;
+  border: 1px solid var(--dash-border);
+  background: #0c0c0f;
+}
+
+.face-scan-wrap .face-video {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  min-height: 200px;
+  max-height: 260px;
+  object-fit: cover;
+  display: block;
+  margin: 0;
+  vertical-align: top;
+  background: #0c0c0f;
+}
+
+.face-scan-canvas {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Misma base visual para cámara y captura (evita estilo nativo distinto en Windows). */
+.login-box button.btn-cta {
+  -webkit-appearance: none;
+  appearance: none;
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: var(--dash-radius-sm);
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 0.875rem;
+  line-height: 1.35;
+  text-align: center;
+  color: #fff;
+  transition: filter 0.2s, transform 0.15s;
+}
+
+.login-box button.btn-cta::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+
+.login-box button.btn-cta--violet {
+  margin-bottom: 0.65rem;
+  background: linear-gradient(135deg, #7c3aed, var(--dash-accent));
+  box-shadow: 0 4px 14px rgba(139, 92, 246, 0.3);
+}
+
+.login-box button.btn-cta--green {
+  margin-top: 0.15rem;
+  background: linear-gradient(135deg, #059669, var(--dash-green));
+  box-shadow: 0 4px 14px rgba(52, 211, 153, 0.3);
+}
+
+/* Secundario «cámara»: mismo ancho/alto que Ingresar; icono + texto centrados con flex */
+.login-box button.btn-cta.btn-cta--camera,
+.login-box #btnShowFaceLogin {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(45, 212, 191, 0.42);
+  border-radius: var(--dash-radius-sm);
+  background: linear-gradient(
+    155deg,
+    rgba(45, 212, 191, 0.16) 0%,
+    rgba(30, 27, 75, 0.45) 42%,
+    rgba(15, 23, 42, 0.75) 100%
+  );
+  background-color: rgba(15, 23, 42, 0.65);
+  color: #ecfdf5;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  letter-spacing: 0.01em;
+  line-height: 1.35;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 2px 14px rgba(0, 0, 0, 0.22),
+    0 0 28px rgba(45, 212, 191, 0.07);
+  transition: transform 0.15s ease, filter 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.login-box button.btn-cta.btn-cta--camera .btn-cta-camera__icon,
+.login-box #btnShowFaceLogin .btn-cta-camera__icon {
+  display: block;
+  flex-shrink: 0;
+  opacity: 0.92;
+  filter: drop-shadow(0 0 6px rgba(45, 212, 191, 0.35));
+  pointer-events: none;
+}
+
+.login-box button.btn-cta.btn-cta--camera .btn-cta-camera__text,
+.login-box #btnShowFaceLogin .btn-cta-camera__text {
+  flex: 0 1 auto;
+  text-align: center;
+  padding: 0;
+}
+
+.login-box button.btn-cta.btn-cta--camera:hover:not(:disabled),
+.login-box #btnShowFaceLogin:hover:not(:disabled) {
+  border-color: rgba(94, 234, 212, 0.65);
+  filter: brightness(1.06);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 4px 22px rgba(0, 0, 0, 0.28),
+    0 0 36px rgba(45, 212, 191, 0.14);
+  transform: translateY(-1px);
+}
+
+.login-box button.btn-cta.btn-cta--camera:focus-visible,
+.login-box #btnShowFaceLogin:focus-visible {
+  outline: none;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 0 0 3px rgba(45, 212, 191, 0.35),
+    0 0 28px rgba(45, 212, 191, 0.1);
+}
+
+.login-box button.btn-cta:hover:not(:disabled) {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.login-box button.btn-cta:active:not(:disabled) {
+  transform: translateY(0);
+  filter: brightness(0.98);
+}
+
+.login-box button.btn-cta:focus-visible {
+  outline: none;
+}
+
+.login-box button.btn-cta--violet:focus-visible {
+  box-shadow:
+    0 0 0 3px rgba(139, 92, 246, 0.45),
+    0 4px 14px rgba(139, 92, 246, 0.3);
+}
+
+.login-box button.btn-cta--green:focus-visible {
+  box-shadow:
+    0 0 0 3px rgba(52, 211, 153, 0.45),
+    0 4px 14px rgba(52, 211, 153, 0.3);
+}
+
+.login-box button.btn-cta:disabled {
+  cursor: wait;
+  opacity: 0.88;
+  transform: none;
+}
+
+#formFaceLogin {
+  display: block;
+  width: 100%;
+}
+
+.face-note {
+  font-size: 0.6875rem;
+  color: var(--dash-muted);
+  margin: 0.75rem 0 0;
+  text-align: center;
+  line-height: 1.45;
+}
+
+.login-box input {
+  width: 100%;
+  padding: 0.7rem 0.85rem;
+  margin: 0.5rem 0;
+  border: 1px solid var(--dash-border);
+  border-radius: var(--dash-radius-sm);
+  box-sizing: border-box;
+  font-size: 0.875rem;
+  font-family: inherit;
+  background: rgba(0, 0, 0, 0.28);
+  color: var(--dash-text);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.login-box input::placeholder {
+  color: var(--dash-muted);
+}
+
+.login-box input:focus {
+  outline: none;
+  border-color: var(--dash-accent-dim);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+}
+
+.login-box button[type="submit"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  margin-top: 0.35rem;
+  box-sizing: border-box;
+  background: linear-gradient(135deg, #7c3aed, var(--dash-accent));
+  color: #fff;
+  border: none;
+  border-radius: var(--dash-radius-sm);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  font-family: inherit;
+  line-height: 1.35;
+  box-shadow: 0 4px 14px rgba(139, 92, 246, 0.35);
+  transition: filter 0.2s, transform 0.15s;
+}
+
+.login-box button[type="submit"]::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+
+.login-box button[type="submit"]:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.login-box .error {
+  color: var(--dash-danger);
+  font-size: 0.8125rem;
+  text-align: center;
+  margin: 0.75rem 0 0;
+  padding: 0.5rem;
+  background: rgba(248, 113, 113, 0.1);
+  border-radius: var(--dash-radius-sm);
+  border: 1px solid rgba(248, 113, 113, 0.25);
+}
+
+.login-box .login-extra {
+  text-align: center;
+  font-size: 0.8125rem;
+  margin-top: 1.1rem;
+  color: var(--dash-muted);
+}
+
+.login-box .login-extra a {
+  color: #c4b5fd;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.login-box .login-extra a:hover {
+  text-decoration: underline;
+}
+
+.login-toast {
+  position: fixed;
+  bottom: 1.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: min(380px, 92vw);
+  padding: 0.85rem 1.1rem;
+  background: rgba(120, 53, 15, 0.95);
+  color: #fde68a;
+  border: 1px solid rgba(251, 191, 36, 0.35);
+  border-radius: var(--dash-radius-sm);
+  font-size: 0.875rem;
+  font-weight: 500;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+  z-index: 9998;
+  backdrop-filter: blur(8px);
+}
