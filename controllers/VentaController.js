@@ -61,7 +61,7 @@ class VentaController {
       }
 
       const subtotal = detalle.reduce((s, i) => s + i.precio_unitario * i.cantidad, 0);
-      const total    = +(subtotal * 1.18).toFixed(2);
+      const total = +subtotal.toFixed(2);
 
         const detallePreparado = detalle.map(i => {
         const pu = parseFloat(i.precio_unitario);
