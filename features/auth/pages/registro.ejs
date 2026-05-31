@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Registro | Periféricos</title>
+  <link rel="stylesheet" href="/css/tailwind.css">
+  <link rel="stylesheet" href="/css/custom.css">
+</head>
+<body class="bg-gray-50 font-sans text-gray-900 selection:bg-indigo-200 overflow-x-hidden min-h-screen">
+  
+  <%- include('../../../shared/components/loader') %>
+
+  <div class="min-h-screen w-screen flex items-center justify-center p-6 sm:p-12 relative overflow-y-auto">
+    
+    <!-- Background premium subtle gradients (Agrandados para cubrir más espacio) -->
+    <div class="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-gradient-to-br from-indigo-500/10 via-purple-500/5 to-transparent rounded-full blur-[140px] pointer-events-none"></div>
+    <div class="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-gradient-to-tl from-emerald-500/10 via-teal-500/5 to-transparent rounded-full blur-[140px] pointer-events-none"></div>
+
+    <!-- Alertas -->
+    <% if (toast_warn) { %>
+      <div class="absolute top-6 right-6 lg:right-10 bg-red-50 border border-red-200 text-red-700 px-5 py-3.5 rounded-xl shadow-sm z-50 flex items-start gap-3 animate-[slideInRight_0.3s_ease-out]" role="alert">
+        <svg class="w-5 h-5 text-red-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        <p class="text-sm font-medium"><%= toast_warn %></p>
+      </div>
+    <% } %>
+
+    <!-- Tarjeta de Registro Principal - Ampliada a max-w-6xl y mayor padding -->
+    <div class="w-full max-w-6xl bg-white border border-gray-100/80 rounded-[2rem] shadow-2xl p-8 sm:p-14 relative z-10 flex flex-col my-6">
+      
+      <!-- Cabecera -->
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-gray-100 pb-6 mb-8">
+        <div>
+          <div class="flex items-center gap-2.5 mb-1.5">
+            <span class="px-3 py-1 rounded-full bg-emerald-50 text-[10px] font-extrabold text-emerald-700 tracking-wider uppercase">Registro Biométrico</span>
+            <span class="text-xs text-gray-400 font-semibold">Periféricos Auth</span>
+          </div>
+          <h2 class="text-3xl sm:text-4xl font-black text-gray-950 tracking-tight leading-none">Crear cuenta nueva</h2>
+        </div>
+        <p class="text-xs text-gray-400 mt-3 sm:mt-0 font-semibold bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-100">Los datos biométricos se comparan localmente</p>
+      </div>
+
+      <!-- Grid de dos columnas en Desktop - Espaciado gap-10 aumentado -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-stretch">
+        
+        <!-- Columna Izquierda: Cámara (Biometría) -->
+        <div class="p-8 bg-gray-50/80 border border-gray-200/50 rounded-3xl flex flex-col justify-between shadow-sm relative group">
+          <div class="absolute -top-1 -right-1 w-3 h-3 bg-indigo-500/10 rounded-full blur-sm"></div>
+
+          <div>
+            <div class="flex justify-between items-center mb-1.5">
+              <p class="text-sm font-bold text-gray-800 uppercase tracking-wider">1. Capturar Rostro</p>
+              <span class="text-[10px] text-indigo-600 font-bold bg-indigo-50 px-2.5 py-1 rounded-md">Paso Obligatorio</span>
+            </div>
+            <p class="text-xs text-gray-400 mb-5 leading-relaxed">Enciende tu cámara, alinea tu rostro y presiona capturar.</p>
+            
+            <!-- Video Wrapper más grande -->
+            <div class="relative w-full aspect-[4/3] bg-gray-950 rounded-2xl overflow-hidden border border-gray-200/60 shadow-inner scanner-effect video-wrapper group flex items-center justify-center">
+              <div class="absolute text-gray-400 flex flex-col items-center gap-3.5 z-0">
+                <svg class="w-10 h-10 opacity-30 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><circle cx="12" cy="13" r="3" /></svg>
+                <span class="text-xs font-bold text-gray-500 uppercase tracking-widest">Cámara Apagada</span>
+              </div>
+              <!-- IMPORTANTE: Mantener IDs -->
+              <video id="videoRegistro" class="relative z-10 w-full h-full object-cover transition-opacity duration-500" playsinline muted></video>
+              <canvas id="canvasFaceRegistro" class="absolute inset-0 z-20 w-full h-full" aria-hidden="true"></canvas>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4 mt-8">
+            <button type="button" id="btnEncenderReg" class="w-full py-3.5 px-4 rounded-xl border border-indigo-200 bg-white text-indigo-700 font-bold hover:bg-indigo-50 hover-lift transition-all text-xs text-center shadow-sm">
+              Encender cámara
+            </button>
+            <button type="button" id="btnCapturarReg" class="w-full py-3.5 px-4 rounded-xl bg-indigo-600 text-white font-bold hover:bg-indigo-500 hover-lift transition-all text-xs text-center shadow-md shadow-indigo-600/20 disabled:opacity-50 disabled:cursor-not-allowed">
+              Capturar rostro
+            </button>
+          </div>
+        </div>
+
+        <!-- Columna Derecha: Formulario de Datos -->
+        <div class="flex flex-col justify-between py-2">
+          <form id="formRegistro" method="POST" action="/registro" class="space-y-5">
+            <!-- Input oculto para el descriptor -->
+            <input type="hidden" name="face_descriptor" id="faceDescReg" value="">
+
+            <p class="text-sm font-bold text-gray-800 uppercase tracking-wider mb-2">2. Datos de Cuenta</p>
+
+            <div class="space-y-1.5">
+              <label class="block text-[10px] font-extrabold text-gray-400 uppercase tracking-wider">Usuario</label>
+              <input type="text" name="usuario" placeholder="Ej: juan.perez" required autocomplete="username" 
+                class="w-full px-5 py-3 rounded-xl border border-gray-200 bg-gray-50/50 focus:bg-white focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all text-sm text-gray-900 placeholder-gray-400 outline-none">
+            </div>
+
+            <div class="space-y-1.5">
+              <label class="block text-[10px] font-extrabold text-gray-400 uppercase tracking-wider">Correo Electrónico</label>
+              <input type="email" name="correo" placeholder="juan@empresa.com" required autocomplete="email" 
+                class="w-full px-5 py-3 rounded-xl border border-gray-200 bg-gray-50/50 focus:bg-white focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all text-sm text-gray-900 placeholder-gray-400 outline-none">
+            </div>
+
+            <div class="space-y-1.5">
+              <label class="block text-[10px] font-extrabold text-gray-400 uppercase tracking-wider">Contraseña</label>
+              <input type="password" name="password" id="regPassword" placeholder="••••••••" required autocomplete="new-password" minlength="8"
+                class="w-full px-5 py-3 rounded-xl border border-gray-200 bg-gray-50/50 focus:bg-white focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all text-sm text-gray-900 placeholder-gray-400 outline-none">
+              
+              <!-- Medidor de fuerza de contraseña -->
+              <div class="pt-2">
+                <div class="flex justify-between items-center mb-1">
+                  <span class="text-[10px] text-gray-400">Seguridad: <span id="pwdMeterText" class="font-bold text-gray-700">—</span></span>
+                </div>
+                <div class="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                  <div id="pwdMeterFill" class="h-full bg-gray-300 w-0 transition-all duration-300"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-1.5">
+              <label class="block text-[10px] font-extrabold text-gray-400 uppercase tracking-wider">Confirmar Contraseña</label>
+              <input type="password" name="confirm_password" placeholder="••••••••" required autocomplete="new-password" 
+                class="w-full px-5 py-3 rounded-xl border border-gray-200 bg-gray-50/50 focus:bg-white focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all text-sm text-gray-900 placeholder-gray-400 outline-none">
+            </div>
+
+            <button type="submit" class="w-full py-4 px-4 rounded-xl bg-emerald-600 text-white font-bold shadow-lg shadow-emerald-600/20 hover:bg-emerald-500 hover-lift transition-all text-sm mt-8">
+              Registrar cuenta
+            </button>
+          </form>
+
+          <p class="text-center text-sm text-gray-400 mt-6 font-semibold">
+            ¿Ya tienes cuenta? <a href="/" class="font-bold text-emerald-600 hover:text-emerald-500 hover:underline underline-offset-4 transition-colors">Inicia sesión</a>
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <script src="/js/vendor/face-api.min.js"></script>
+  <script src="/js/auth/face-auth.js"></script>
+  <script src="/js/auth/registro.js"></script>
+  
+  <style>
+    @keyframes slideInRight {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+  </style>
+</body>
+</html>

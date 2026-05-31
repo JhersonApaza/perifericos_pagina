@@ -1,0 +1,20 @@
+<div id="global-loader" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gray-50/90 backdrop-blur-md transition-opacity duration-500">
+  <div class="relative flex items-center justify-center w-20 h-20">
+    <div class="absolute inset-0 border-4 border-indigo-200 rounded-full"></div>
+    <div class="absolute inset-0 border-4 border-indigo-600 rounded-full border-t-transparent animate-spin"></div>
+    <span class="text-indigo-600 font-bold text-sm absolute">PA</span>
+  </div>
+  <p class="mt-4 text-sm font-medium text-gray-500 animate-pulse">Cargando aplicación...</p>
+</div>
+
+<script>
+  window.addEventListener('load', () => {
+    const loader = document.getElementById('global-loader');
+    if (loader) {
+      loader.classList.add('opacity-0');
+      setTimeout(() => {
+        loader.style.display = 'none';
+      }, 500);
+    }
+  });
+</script>

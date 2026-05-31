@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Acceso al Sistema | Periféricos</title>
+  <!-- Force exact styles to load -->
+  <link rel="stylesheet" href="/css/tailwind.css">
+  <link rel="stylesheet" href="/css/custom.css">
+</head>
+<body class="bg-gray-50 font-sans text-gray-900 selection:bg-indigo-200 overflow-x-hidden min-h-screen">
+  
+  <%- include('../../../shared/components/loader') %>
+
+  <div class="min-h-screen w-screen flex items-center justify-center p-4 sm:p-8 relative overflow-y-auto">
+    
+    <!-- Background premium subtle gradients (Coincidente con el registro) -->
+    <div class="absolute top-[-15%] left-[-15%] w-[60%] h-[60%] bg-gradient-to-br from-indigo-500/10 via-purple-500/5 to-transparent rounded-full blur-[140px] pointer-events-none"></div>
+    <div class="absolute bottom-[-15%] right-[-15%] w-[60%] h-[60%] bg-gradient-to-tl from-purple-500/10 via-pink-500/5 to-transparent rounded-full blur-[140px] pointer-events-none"></div>
+
+    <!-- Alertas -->
+    <% if (toast_warn) { %>
+      <div class="absolute top-6 right-6 lg:right-10 bg-red-50 border border-red-200 text-red-700 px-5 py-3.5 rounded-xl shadow-sm z-50 flex items-start gap-3 animate-[slideInRight_0.3s_ease-out]" role="alert">
+        <svg class="w-5 h-5 text-red-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        <p class="text-sm font-medium"><%= toast_warn %></p>
+      </div>
+    <% } %>
+    <% if (toast_ok) { %>
+      <div class="absolute top-6 right-6 lg:right-10 bg-emerald-50 border border-emerald-200 text-emerald-800 px-5 py-3.5 rounded-xl shadow-sm z-50 flex items-start gap-3 animate-[slideInRight_0.3s_ease-out]" role="status">
+        <svg class="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <p class="text-sm font-medium"><%= toast_ok %></p>
+      </div>
+    <% } %>
+
+    <!-- Tarjeta de Login Principal - Centrada, flotante, max-w-lg -->
+    <div class="w-full max-w-lg bg-white border border-gray-100/80 rounded-[2rem] shadow-2xl p-8 sm:p-10 relative z-10 flex flex-col my-6">
+      
+      <!-- Cabecera del Login -->
+      <div class="flex items-center gap-3 border-b border-gray-100 pb-5 mb-6">
+        <div class="w-10 h-10 rounded-xl bg-gray-900 flex items-center justify-center font-bold text-lg text-white border border-gray-800 shadow-md">
+          <svg class="w-5 h-5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.071 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"/></svg>
+        </div>
+        <div>
+          <span class="text-[10px] font-extrabold text-indigo-600 tracking-wider uppercase block">Acceso al Sistema</span>
+          <span class="text-xs text-gray-400 font-semibold">Periféricos Auth</span>
+        </div>
+      </div>
+
+      <!-- Panel de Inicio Clásico -->
+      <div id="loginClassicPanel" class="space-y-6 transition-all duration-300">
+        <div>
+          <h2 class="text-2xl font-black text-gray-950 tracking-tight">Bienvenido de nuevo</h2>
+          <p class="mt-1 text-xs text-gray-400 font-semibold">Ingresa tus credenciales para recibir el código OTP de acceso.</p>
+        </div>
+
+        <form method="POST" action="/" class="space-y-4">
+          <div class="space-y-1.5">
+            <label class="block text-[10px] font-extrabold text-gray-400 uppercase tracking-wider">Usuario</label>
+            <input type="text" name="usuario" placeholder="juan.perez" required autocomplete="username" 
+              class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm text-gray-900 placeholder-gray-400 outline-none">
+          </div>
+          <div class="space-y-1.5">
+            <label class="block text-[10px] font-extrabold text-gray-400 uppercase tracking-wider">Contraseña</label>
+            <input type="password" name="password" placeholder="••••••••" required autocomplete="current-password" 
+              class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm text-gray-900 placeholder-gray-400 outline-none">
+          </div>
+          <button type="submit" class="w-full py-3.5 px-4 mt-2 rounded-xl bg-gray-900 text-white font-bold shadow-lg shadow-gray-900/20 hover:bg-gray-800 hover-lift transition-all text-sm">
+            Ingresar al sistema
+          </button>
+        </form>
+
+        <div class="relative py-2">
+          <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-100"></div></div>
+          <div class="relative flex justify-center text-[10px] uppercase tracking-widest font-extrabold">
+            <span class="px-4 bg-white text-gray-400">o accede con</span>
+          </div>
+        </div>
+
+        <button type="button" id="btnShowFaceLogin" class="w-full py-3.5 px-4 rounded-xl border border-gray-200 bg-white text-gray-700 font-bold shadow-sm hover:bg-gray-50 hover:border-indigo-200 hover:text-indigo-600 transition-all flex items-center justify-center gap-3 text-sm">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2v11z"/><circle cx="12" cy="13" r="3.5"/></svg>
+          Reconocimiento facial
+        </button>
+
+        <p class="text-center text-sm text-gray-400 mt-6 font-semibold">
+          ¿No tienes cuenta? <a href="/registro" class="font-bold text-indigo-600 hover:text-indigo-500 hover:underline underline-offset-4 transition-colors">Regístrate aquí</a>
+        </p>
+      </div>
+
+      <!-- Panel Face Login (Oculto por defecto, se autoajusta dentro del mismo card) -->
+      <div id="loginFacePanel" hidden class="space-y-6">
+        <button type="button" id="btnHideFaceLogin" class="group flex items-center gap-2 text-xs font-bold text-gray-400 hover:text-gray-900 transition-colors w-fit">
+          <svg class="w-4 h-4 transform group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+          Volver a credenciales
+        </button>
+
+        <div>
+          <p class="text-[10px] font-extrabold text-indigo-600 tracking-widest uppercase mb-0.5">Sin contraseña</p>
+          <h2 class="text-2xl font-black text-gray-955 tracking-tight">Inicio con rostro</h2>
+          <p class="text-xs text-gray-400 font-semibold">Pulsa encender cámara, céntrate en el recuadro y captura tu rostro.</p>
+        </div>
+
+        <!-- Contenedor del video y canvas para face-api -->
+        <div class="relative w-full aspect-[4/3] bg-gray-950 rounded-2xl overflow-hidden border border-gray-200/60 shadow-inner scanner-effect video-wrapper group flex items-center justify-center">
+          <div class="absolute text-gray-400 flex flex-col items-center gap-2 z-0">
+            <svg class="w-8 h-8 opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><circle cx="12" cy="13" r="3" /></svg>
+            <span class="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">Cámara Apagada</span>
+          </div>
+          <!-- IMPORTANTE: Mantener IDs para compatibilidad -->
+          <video id="videoLogin" class="relative z-10 w-full h-full object-cover transition-opacity duration-500" playsinline muted></video>
+          <canvas id="canvasFaceLogin" class="absolute inset-0 z-20 w-full h-full" aria-hidden="true"></canvas>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 mt-4">
+          <button type="button" id="btnEncenderLogin" class="w-full py-3 px-4 rounded-xl border border-indigo-200 bg-white text-indigo-700 font-bold hover:bg-indigo-50 hover-lift transition-all text-xs text-center shadow-sm">
+            Encender cámara
+          </button>
+          <form id="formFaceLogin" method="POST" action="/login_face" class="w-full">
+            <input type="hidden" name="face_descriptor" id="faceDescLogin" value="">
+            <button type="button" id="btnFaceLogin" class="w-full py-3 px-4 rounded-xl bg-emerald-600 text-white font-bold hover:bg-emerald-500 hover-lift transition-all shadow-md shadow-emerald-600/20 disabled:opacity-50 disabled:shadow-none disabled:cursor-not-allowed text-xs text-center">
+              Capturar y entrar
+            </button>
+          </form>
+        </div>
+        
+        <p class="text-center text-[10px] text-gray-400/90 font-medium">
+          Requiere registro facial previo.
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="/js/vendor/face-api.min.js"></script>
+  <script src="/js/auth/face-auth.js"></script>
+  <script src="/js/auth/login.js"></script>
+  
+  <style>
+    @keyframes slideInRight {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+  </style>
+</body>
+</html>
