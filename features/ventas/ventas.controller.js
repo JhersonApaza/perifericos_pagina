@@ -84,6 +84,17 @@ class VentaController {
       const venta_id = await this.modelo.crearVenta(trabajador_id, cliente.trim(), total, notas, metodo_pago);
       await this.modelo.crearDetalles(venta_id, detallePreparado);
 
+              try {
+        const WEBHOOK_N8N = 'https://jhersonpe.app.n8n.cloud/webhook/nueva-venta';
+        await fetch(WEBHOOK_N8N, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ venta_id })
+        });
+        } catch (e) {
+        console.warn('WhatsApp webhook error:', e.message);
+        }
+        
       req.session.toast_ok = `Venta #${venta_id} registrada. Total: S/ ${total.toFixed(2)}`;
         res.redirect('/dashboard');
     } catch (err) {

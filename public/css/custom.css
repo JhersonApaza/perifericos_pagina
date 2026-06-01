@@ -109,3 +109,77 @@
   width: 100%;
   background-color: #10b981; /* emerald-500 */
 }
+
+/* ── Análisis Avanzado ─────────────────────────────── */
+.adv-tab {
+  padding: 6px 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+  font-size: .8rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: transparent;
+  color: #6b7280;
+  transition: background .15s, color .15s, border-color .15s;
+}
+.adv-tab:hover { border-color: #a5b4fc; color: #4338ca; }
+.adv-tab--active {
+  background: #ede9fe;
+  border-color: #a5b4fc;
+  color: #4f46e5;
+}
+.adv-panel { display: none; }
+.adv-panel--active { display: block; }
+
+  body.dark { background-color: #0f172a; color: #e2e8f0; }
+  body.dark header { background: rgba(15,23,42,0.85) !important; border-color: #1e293b !important; }
+  body.dark header h1 { color: #f1f5f9 !important; }
+  body.dark header p { color: #94a3b8 !important; }
+  body.dark #dark-mode-toggle { background: #1e293b !important; border-color: #334155 !important; color: #fbbf24 !important; }
+  body.dark aside { background-color: #020617 !important; }
+  body.dark main { background-color: #0f172a !important; }
+
+  /* Cards y paneles */
+  body.dark .bg-white { background-color: #1e293b !important; border-color: #334155 !important; }
+  body.dark .bg-gray-50 { background-color: #0f172a !important; }
+  body.dark .bg-gray-50\/50 { background-color: #0f172a !important; }
+  body.dark .border-gray-100, body.dark .border-gray-200 { border-color: #334155 !important; }
+
+  /* Textos */
+  body.dark .text-gray-900 { color: #f1f5f9 !important; }
+  body.dark .text-gray-700 { color: #cbd5e1 !important; }
+  body.dark .text-gray-600 { color: #94a3b8 !important; }
+  body.dark .text-gray-500 { color: #64748b !important; }
+  body.dark .text-gray-400 { color: #475569 !important; }
+
+  /* Inputs y selects */
+  body.dark input, body.dark select {
+    background-color: #0f172a !important;
+    border-color: #334155 !important;
+    color: #f1f5f9 !important;
+  }
+  body.dark input::placeholder { color: #475569 !important; }
+
+  /* Producto cards */
+  body.dark .rounded-xl.border { background-color: #1e293b !important; border-color: #334155 !important; }
+  body.dark .rounded-xl.border:hover { border-color: #10b981 !important; }
+
+  /* Carrito items */
+  body.dark #cart-body .bg-white { background-color: #1e293b !important; }
+
+  /* Resumen */
+  body.dark #resumen { background-color: #1e293b !important; border-color: #334155 !important; }
+
+  /* Tabs */
+  body.dark .border-gray-200 { border-color: #334155 !important; }
+
+  /* Tabla historial */
+  body.dark thead tr { background-color: #1e293b !important; }
+  body.dark tbody tr:hover { background-color: #1e293b !important; }
+  body.dark td, body.dark th { color: #cbd5e1 !important; }
+
+  /* Botones qty */
+  body.dark .bg-gray-50.p-1 { background-color: #0f172a !important; border-color: #334155 !important; }
+  body.dark .bg-gray-50.p-1 button { background-color: #1e293b !important; border-color: #334155 !important; color: #e2e8f0 !important; }
+
+  body, header, aside, main { transition: background-color 0.3s ease, color 0.2s ease; }

@@ -89,6 +89,25 @@ class Venta {
     );
     return rows[0];
   }
+
+  async obtenerDetalleVentaCompleto(venta_id) {
+  const rows = await this.db.query(
+    `SELECT 
+      v.id, v.cliente, v.total, 
+      DATE_FORMAT(v.fecha_venta, '%d/%m/%Y %H:%i') AS fecha_venta,
+      t.usuario AS trabajador,
+      p.nombre_producto, p.cantidad AS stock_actual,
+      dv.cantidad AS qty_vendida, dv.precio_unitario, dv.subtotal
+    FROM ventas v
+    JOIN trabajadores t ON t.id = v.trabajador_id
+    JOIN detalle_ventas dv ON dv.venta_id = v.id
+    JOIN producto p ON p.id = dv.producto_id
+    WHERE v.id = ?`,
+    { replacements: [venta_id], type: QueryTypes.SELECT }
+  );
+  return rows;
+}
+
 }
 
 module.exports = Venta;
