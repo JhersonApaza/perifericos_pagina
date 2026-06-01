@@ -81,8 +81,8 @@
     
     await loadModels();
     
-    // Detectar un solo rostro con landmarks y descriptor
-    const detection = await faceapi.detectSingleFace(video)
+    // Detectar un solo rostro con landmarks y descriptor (optimizado a minConfidence: 0.35 para baja luz)
+    const detection = await faceapi.detectSingleFace(video, new faceapi.SsdMobilenetv1Options({ minConfidence: 0.35 }))
       .withFaceLandmarks()
       .withFaceDescriptor();
 
@@ -114,7 +114,7 @@
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
 
-      const detection = await faceapi.detectSingleFace(video).withFaceLandmarks();
+      const detection = await faceapi.detectSingleFace(video, new faceapi.SsdMobilenetv1Options({ minConfidence: 0.35 })).withFaceLandmarks();
       
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 

@@ -1,14 +1,22 @@
+/**
+ * public/js/dashboard/dashboard.js
+ * Script de inicialización de gráficos y toasts del Dashboard.
+ * Optimizado para rendimiento, corrección de bugs de redimensionamiento y soporte dinámico de modo oscuro.
+ */
 (function () {
+  // Registro global de gráficos para sincronización con modo oscuro
+  window.chartInstances = [];
+
   function readBootstrap() {
     const el = document.getElementById("dashboard-bootstrap");
     if (!el || !String(el.textContent || "").trim()) {
-      return { toastOk: "", toastWarn: "", labelsDia: [], dataDia: [], labelsTipo: [], dataTipo: [] };
+      return { toastOk: "", toastWarn: "", labelsDia: [], dataDia: [] };
     }
     try {
       const data = JSON.parse(el.textContent);
       return data;
     } catch (e) {
-      return { toastOk: "", toastWarn: "", labelsDia: [], dataDia: [], labelsTipo: [], dataTipo: [] };
+      return { toastOk: "", toastWarn: "", labelsDia: [], dataDia: [] };
     }
   }
 
@@ -41,86 +49,72 @@
     }, 4500);
   }
 
-  // Common ApexCharts Options
-  const commonOptions = {
-    chart: {
-      fontFamily: "'Inter', sans-serif",
-      toolbar: { show: false },
-      zoom: { enabled: false },
-      background: 'transparent'
-    },
-    theme: { mode: 'light' },
-    tooltip: { theme: 'light' },
-    grid: {
-      borderColor: '#f1f5f9', // slate-100
-      strokeDashArray: 4,
-      xaxis: { lines: { show: false } },
-      yaxis: { lines: { show: true } }
-    }
-  };
+  // Opciones base compartidas para ApexCharts
+  function getCommonOptions() {
+    const isDark = document.body.classList.contains('dark');
+    return {
+      chart: {
+        fontFamily: "'Inter', sans-serif",
+        toolbar: { show: false },
+        zoom: { enabled: false },
+        background: 'transparent'
+      },
+      theme: { mode: isDark ? 'dark' : 'light' },
+      tooltip: { theme: isDark ? 'dark' : 'light' },
+      grid: {
+        borderColor: isDark ? '#334155' : '#f1f5f9', // slate-700 en modo oscuro, slate-100 en claro
+        strokeDashArray: 4,
+        xaxis: { lines: { show: false } },
+        yaxis: { lines: { show: true } }
+      }
+    };
+  }
 
   function initCharts(cfg) {
     if (typeof ApexCharts === "undefined") return;
 
-    // 1. Ventas por Día (Area Chart)
-    const cd = document.querySelector("#chartDias");
-    const emptyDias = document.getElementById("emptyDias");
-    if (cd && (cfg.labelsDia || []).length) {
-      const options = {
-        ...commonOptions,
-        series: [{ name: 'Ventas', data: cfg.dataDia }],
-        chart: { type: 'area', height: '100%', parentHeightOffset: 0, toolbar: { show: false } },
-        colors: ['#6366f1'], // indigo-500
-        fill: {
-          type: 'gradient',
-          gradient: { shadeIntensity: 1, opacityFrom: 0.4, opacityTo: 0.05, stops: [0, 90, 100] }
-        },
-        dataLabels: { enabled: false },
-        stroke: { curve: 'smooth', width: 2 },
-        xaxis: {
-          categories: cfg.labelsDia,
-          labels: { style: { colors: '#94a3b8' } },
-          axisBorder: { show: false },
-          axisTicks: { show: false }
-        },
-        yaxis: {
-          labels: {
-            style: { colors: '#94a3b8' },
-            formatter: (value) => 'S/ ' + value
+    // 1. Ventas por Día (Area Chart) - Altura fija de 300px
+    try {
+      const cd = document.querySelector("#chartDias");
+      const emptyDias = document.getElementById("emptyDias");
+      if (cd && (cfg.labelsDia || []).length) {
+        const options = {
+          ...getCommonOptions(),
+          series: [{ name: 'Ventas', data: cfg.dataDia }],
+          chart: { ...getCommonOptions().chart, type: 'area', height: 300, parentHeightOffset: 0 },
+          colors: ['#6366f1'], // indigo-500
+          fill: {
+            type: 'gradient',
+            gradient: { shadeIntensity: 1, opacityFrom: 0.4, opacityTo: 0.05, stops: [0, 90, 100] }
+          },
+          dataLabels: { enabled: false },
+          stroke: { curve: 'smooth', width: 2 },
+          xaxis: {
+            categories: cfg.labelsDia,
+            labels: { style: { colors: '#94a3b8' } },
+            axisBorder: { show: false },
+            axisTicks: { show: false }
+          },
+          yaxis: {
+            labels: {
+              style: { colors: '#94a3b8' },
+              formatter: (value) => 'S/ ' + value
+            }
           }
-        }
-      };
-      new ApexCharts(cd, options).render();
-    } else if (cd && emptyDias) {
-      cd.classList.add("hidden");
-      emptyDias.classList.remove("hidden");
-    }
-
-    // 2. Ventas por Categoría (Donut Chart)
-    const ct = document.querySelector("#chartTipos");
-    const emptyTipos = document.getElementById("emptyTipos");
-    if (ct && (cfg.labelsTipo || []).length) {
-      const options = {
-        ...commonOptions,
-        series: cfg.dataTipo,
-        chart: { type: 'donut', height: '100%' },
-        labels: cfg.labelsTipo,
-        colors: ['#6366f1', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6', '#06b6d4'],
-        plotOptions: {
-          pie: { donut: { size: '70%', labels: { show: true, total: { show: true, label: 'Total S/.', formatter: function (w) { return w.globals.seriesTotals.reduce((a, b) => a + b, 0).toFixed(2); } } } } }
-        },
-        dataLabels: { enabled: false },
-        stroke: { show: true, colors: '#ffffff', width: 2 },
-        legend: { position: 'bottom', horizontalAlign: 'center', markers: { radius: 12 } }
-      };
-      new ApexCharts(ct, options).render();
-    } else if (ct && emptyTipos) {
-      ct.classList.add("hidden");
-      emptyTipos.classList.remove("hidden");
+        };
+        const chart = new ApexCharts(cd, options);
+        chart.render();
+        window.chartInstances.push(chart);
+      } else if (cd && emptyDias) {
+        cd.classList.add("hidden");
+        emptyDias.classList.remove("hidden");
+      }
+    } catch (e) {
+      console.error("Error rendering chartDias:", e);
     }
   }
 
-  // 3. Pareto ABC
+  // 3. Pareto ABC - Altura fija de 320px
   function initPareto() {
     const el = document.getElementById("pareto-data");
     if (!el) return;
@@ -135,16 +129,15 @@
     const ingresos = pareto.map(p => parseFloat(p.ingreso));
     const pcts = pareto.map(p => parseFloat(p.pct_acumulado));
     
-    // We can't do exact per-bar coloring in ApexCharts easily with mixed charts, so we'll use a single color for bars
     const options = {
-      ...commonOptions,
+      ...getCommonOptions(),
       series: [
         { name: 'Ingreso S/.', type: 'column', data: ingresos },
         { name: '% Acumulado', type: 'line', data: pcts }
       ],
-      chart: { height: '100%', type: 'line', toolbar: { show: false } },
+      chart: { ...getCommonOptions().chart, height: 320, type: 'line' },
       stroke: { width: [0, 2], curve: 'smooth' },
-      colors: ['#f59e0b', '#6366f1'], // amber for bars, indigo for line
+      colors: ['#f59e0b', '#6366f1'], // amber para barras, indigo para línea
       labels: labels,
       xaxis: { labels: { style: { colors: '#94a3b8' } } },
       yaxis: [
@@ -153,10 +146,12 @@
       ],
       legend: { show: false }
     };
-    new ApexCharts(canvas, options).render();
+    const chart = new ApexCharts(canvas, options);
+    chart.render();
+    window.chartInstances.push(chart);
   }
 
-  // 4. Ranking
+  // 4. Ranking - Altura fija de 300px
   function initRanking() {
     const el = document.getElementById("ranking-data");
     if (!el) return;
@@ -171,19 +166,21 @@
     const montos = ranking.map(r => parseFloat(r.total_monto));
 
     const options = {
-      ...commonOptions,
+      ...getCommonOptions(),
       series: [{ name: 'Ventas S/.', data: montos }],
-      chart: { type: 'bar', height: '100%', toolbar: { show: false } },
+      chart: { ...getCommonOptions().chart, type: 'bar', height: 300 },
       plotOptions: { bar: { horizontal: true, borderRadius: 4, barHeight: '50%' } },
       colors: ['#8b5cf6'], // purple-500
       dataLabels: { enabled: false },
       xaxis: { categories: labels, labels: { style: { colors: '#94a3b8' }, formatter: (value) => 'S/ ' + value } },
-      yaxis: { labels: { style: { colors: '#475569', fontWeight: 500 } } }
+      yaxis: { labels: { style: { colors: document.body.classList.contains('dark') ? '#cbd5e1' : '#475569', fontWeight: 500 } } }
     };
-    new ApexCharts(canvas, options).render();
+    const chart = new ApexCharts(canvas, options);
+    chart.render();
+    window.chartInstances.push(chart);
   }
 
-  // 5. Stock Crítico
+  // 5. Stock Crítico - Altura fija de 240px
   function initStock() {
     const el = document.getElementById("stock-data");
     if (!el) return;
@@ -198,9 +195,9 @@
     const dias = stock.map(s => parseInt(s.dias_restantes));
 
     const options = {
-      ...commonOptions,
+      ...getCommonOptions(),
       series: [{ name: 'Días Restantes', data: dias }],
-      chart: { type: 'bar', height: '100%', toolbar: { show: false } },
+      chart: { ...getCommonOptions().chart, type: 'bar', height: 240 },
       plotOptions: {
         bar: {
           horizontal: false,
@@ -208,9 +205,9 @@
           columnWidth: '40%',
           colors: {
             ranges: [
-              { from: 0, to: 5, color: '#ef4444' }, // red
-              { from: 6, to: 10, color: '#f59e0b' }, // amber
-              { from: 11, to: 15, color: '#eab308' } // yellow
+              { from: 0, to: 5, color: '#ef4444' }, // rojo
+              { from: 6, to: 10, color: '#f59e0b' }, // ambar
+              { from: 11, to: 15, color: '#eab308' } // amarillo
             ]
           }
         }
@@ -219,23 +216,26 @@
       xaxis: { categories: labels, labels: { style: { colors: '#64748b', fontSize: '11px' } }, axisBorder: { show: false }, axisTicks: { show: false } },
       yaxis: { labels: { style: { colors: '#94a3b8' }, formatter: (value) => value + 'd' } }
     };
-    new ApexCharts(canvas, options).render();
+    const chart = new ApexCharts(canvas, options);
+    chart.render();
+    window.chartInstances.push(chart);
   }
 
   document.addEventListener("DOMContentLoaded", function () {
     const cfg = readBootstrap();
     showToast(cfg.toastOk, "ok");
     showToast(cfg.toastWarn, "warn");
-    initCharts(cfg);
-    initPareto();
-    initRanking();
-    initStock();
-    initAdvVentas();
+    
+    try { initCharts(cfg); } catch (e) { console.error("initCharts failed:", e); }
+    try { initPareto(); } catch (e) { console.error("initPareto failed:", e); }
+    try { initRanking(); } catch (e) { console.error("initRanking failed:", e); }
+    try { initStock(); } catch (e) { console.error("initStock failed:", e); }
+    try { initAdvVentas(); } catch (e) { console.error("initAdvVentas failed:", e); }
     window._advVentasInit = true;
   });
 
   // ══════════════════════════════════════════════════════════
-  //  ANÁLISIS AVANZADO  –  tabs + charts (ApexCharts, tema claro)
+  //  ANÁLISIS AVANZADO  –  tabs + charts
   // ══════════════════════════════════════════════════════════
 
   window.advTab = function(btn, id) {
@@ -249,12 +249,10 @@
     if (id === 'ml'        && !window._advMLInit)        { initAdvML();        window._advMLInit        = true; }
   };
 
-  // Configuración visual clara (igual al resto del dashboard)
   const ADV = {
     textColor:  '#6b7280',
     gridColor:  '#f3f4f6',
     chartBg:    'transparent',
-    tooltip:    { theme: 'light' },
     fontFamily: 'inherit',
   };
 
@@ -263,10 +261,12 @@
   }
 
   function advBaseOptions() {
+    const isDark = document.body.classList.contains('dark');
     return {
       chart: { background: ADV.chartBg, toolbar: { show: false }, fontFamily: ADV.fontFamily },
-      grid:  { borderColor: ADV.gridColor, strokeDashArray: 4 },
-      tooltip: ADV.tooltip,
+      grid:  { borderColor: isDark ? '#334155' : ADV.gridColor, strokeDashArray: 4 },
+      theme: { mode: isDark ? 'dark' : 'light' },
+      tooltip: { theme: isDark ? 'dark' : 'light' },
       dataLabels: { enabled: false },
     };
   }
@@ -286,89 +286,107 @@
     if (document.getElementById('adv-stat-avg')) document.getElementById('adv-stat-avg').textContent = fmt(avg);
     if (document.getElementById('adv-stat-max')) document.getElementById('adv-stat-max').textContent = fmt(max);
 
-    // Barras por cliente
+    // Barras por cliente - Altura fija
     const elV = document.getElementById('advChartVentas');
-    if (elV) new ApexCharts(elV, {
-      ...advBaseOptions(),
-      series: [{ name: 'S/.', data: totales }],
-      chart: { ...advBaseOptions().chart, type: 'bar', height: 220 },
-      colors: colors,
-      plotOptions: { bar: { borderRadius: 5, distributed: true, columnWidth: '60%' } },
-      legend: { show: false },
-      xaxis: { categories: labels, labels: { style: { colors: ADV.textColor, fontSize: '10px' }, rotate: -35 }, axisBorder: { show: false }, axisTicks: { show: false } },
-      yaxis: { labels: { style: { colors: ADV.textColor }, formatter: v => 'S/'+v.toLocaleString() } },
-    }).render();
+    if (elV) {
+      const chart = new ApexCharts(elV, {
+        ...advBaseOptions(),
+        series: [{ name: 'S/.', data: totales }],
+        chart: { ...advBaseOptions().chart, type: 'bar', height: 220 },
+        colors: colors,
+        plotOptions: { bar: { borderRadius: 5, distributed: true, columnWidth: '60%' } },
+        legend: { show: false },
+        xaxis: { categories: labels, labels: { style: { colors: ADV.textColor, fontSize: '10px' }, rotate: -35 }, axisBorder: { show: false }, axisTicks: { show: false } },
+        yaxis: { labels: { style: { colors: ADV.textColor }, formatter: v => 'S/'+v.toLocaleString() } },
+      });
+      chart.render();
+      window.chartInstances.push(chart);
+    }
 
-    // Donut distribución
+    // Donut distribución - Altura fija
     const alta  = totales.filter(v => v > 5000).length;
     const media = totales.filter(v => v >= 2000 && v <= 5000).length;
     const baja  = totales.filter(v => v < 2000).length;
     const elD = document.getElementById('advChartDist');
-    if (elD) new ApexCharts(elD, {
-      ...advBaseOptions(),
-      series: [alta, media, baja],
-      chart: { ...advBaseOptions().chart, type: 'donut', height: 200 },
-      labels: ['Alta (>S/5000)', 'Media (S/2000–5000)', 'Baja (<S/2000)'],
-      colors: ['#8b5cf6', '#10b981', '#9ca3af'],
-      legend: { position: 'bottom', fontSize: '11px', labels: { colors: ADV.textColor } },
-      plotOptions: { pie: { donut: { size: '58%' } } },
-    }).render();
+    if (elD) {
+      const chart = new ApexCharts(elD, {
+        ...advBaseOptions(),
+        series: [alta, media, baja],
+        chart: { ...advBaseOptions().chart, type: 'donut', height: 200 },
+        labels: ['Alta (>S/5000)', 'Media (S/2000–5000)', 'Baja (<S/2000)'],
+        colors: ['#8b5cf6', '#10b981', '#9ca3af'],
+        legend: { position: 'bottom', fontSize: '11px', labels: { colors: ADV.textColor } },
+        plotOptions: { pie: { donut: { size: '58%' } } },
+      });
+      chart.render();
+      window.chartInstances.push(chart);
+    }
   }
 
   function initAdvProductos() {
     const rawTop     = readJSON('ml-topproductos-data');
     const rawScatter = readJSON('ml-preciostock-data');
 
-    // Ingresos por categoría
+    // Ingresos por categoría - Altura fija
     const catMap = {};
     rawTop.forEach(r => { const c = r.categoria || 'Otros'; catMap[c] = (catMap[c]||0) + parseFloat(r.ingreso); });
     const catLabels = Object.keys(catMap);
     const catData   = catLabels.map(k => catMap[k]);
     const palette   = ['#8b5cf6','#10b981','#f59e0b','#f87171','#818cf8','#22d3ee','#fb923c','#e879f9'];
     const elC = document.getElementById('advChartCat');
-    if (elC && catLabels.length) new ApexCharts(elC, {
-      ...advBaseOptions(),
-      series: [{ name: 'S/.', data: catData }],
-      chart: { ...advBaseOptions().chart, type: 'bar', height: 240 },
-      colors: catLabels.map((_, i) => palette[i % palette.length]),
-      plotOptions: { bar: { borderRadius: 5, distributed: true, columnWidth: '55%' } },
-      legend: { show: false },
-      xaxis: { categories: catLabels, labels: { style: { colors: ADV.textColor, fontSize: '10px' } }, axisBorder: { show: false }, axisTicks: { show: false } },
-      yaxis: { labels: { style: { colors: ADV.textColor }, formatter: v => 'S/'+v.toLocaleString() } },
-    }).render();
+    if (elC && catLabels.length) {
+      const chart = new ApexCharts(elC, {
+        ...advBaseOptions(),
+        series: [{ name: 'S/.', data: catData }],
+        chart: { ...advBaseOptions().chart, type: 'bar', height: 240 },
+        colors: catLabels.map((_, i) => palette[i % palette.length]),
+        plotOptions: { bar: { borderRadius: 5, distributed: true, columnWidth: '55%' } },
+        legend: { show: false },
+        xaxis: { categories: catLabels, labels: { style: { colors: ADV.textColor, fontSize: '10px' } }, axisBorder: { show: false }, axisTicks: { show: false } },
+        yaxis: { labels: { style: { colors: ADV.textColor }, formatter: v => 'S/'+v.toLocaleString() } },
+      });
+      chart.render();
+      window.chartInstances.push(chart);
+    }
 
-    // Scatter precio vs stock
+    // Scatter precio vs stock - Altura fija
     const elS = document.getElementById('advChartScatter');
-    if (elS && rawScatter.length) new ApexCharts(elS, {
-      ...advBaseOptions(),
-      series: [{ name: 'Producto', data: rawScatter.map(r => ({ x: parseFloat(r.precio), y: parseInt(r.stock), z: r.nombre_producto })) }],
-      chart: { ...advBaseOptions().chart, type: 'scatter', height: 240 },
-      colors: ['#8b5cf6'],
-      markers: { size: 8, hover: { size: 11 } },
-      xaxis: { title: { text: 'Precio (S/.)', style: { color: ADV.textColor } }, labels: { style: { colors: ADV.textColor } }, axisBorder: { show: false }, axisTicks: { show: false } },
-      yaxis: { title: { text: 'Stock', style: { color: ADV.textColor } }, labels: { style: { colors: ADV.textColor } } },
-      tooltip: { ...ADV.tooltip, custom: ({ seriesIndex, dataPointIndex, w }) => {
-        const p = w.config.series[seriesIndex].data[dataPointIndex];
-        return `<div style="padding:8px;font-size:12px">${p.z}<br>S/${p.x} · Stock: ${p.y}</div>`;
-      }},
-    }).render();
+    if (elS && rawScatter.length) {
+      const chart = new ApexCharts(elS, {
+        ...advBaseOptions(),
+        series: [{ name: 'Producto', data: rawScatter.map(r => ({ x: parseFloat(r.precio), y: parseInt(r.stock), z: r.nombre_producto })) }],
+        chart: { ...advBaseOptions().chart, type: 'scatter', height: 240 },
+        colors: ['#8b5cf6'],
+        markers: { size: 8, hover: { size: 11 } },
+        xaxis: { title: { text: 'Precio (S/.)', style: { color: ADV.textColor } }, labels: { style: { colors: ADV.textColor } }, axisBorder: { show: false }, axisTicks: { show: false } },
+        yaxis: { title: { text: 'Stock', style: { color: ADV.textColor } }, labels: { style: { colors: ADV.textColor } } },
+        tooltip: { ...advBaseOptions().tooltip, custom: ({ seriesIndex, dataPointIndex, w }) => {
+          const p = w.config.series[seriesIndex].data[dataPointIndex];
+          return `<div class="p-2 text-xs text-gray-900 bg-white border border-gray-100 rounded-lg shadow-sm">${p.z}<br>S/${p.x} · Stock: ${p.y}</div>`;
+        }},
+      });
+      chart.render();
+      window.chartInstances.push(chart);
+    }
 
-    // Top productos horizontal
+    // Top productos horizontal - Altura dinámica adaptada pero fija en el render
     const elT = document.getElementById('advChartTopProd');
     if (elT && rawTop.length) {
       const topLabels = rawTop.map(r => r.nombre_producto.length > 18 ? r.nombre_producto.slice(0,17)+'…' : r.nombre_producto);
       const topUnids  = rawTop.map(r => parseInt(r.unidades));
-      const dynH = Math.max(topLabels.length * 40 + 60, 200);
+      const dynH = Math.max(topLabels.length * 40 + 60, 240);
       elT.style.height = dynH + 'px';
-      new ApexCharts(elT, {
+      const chart = new ApexCharts(elT, {
         ...advBaseOptions(),
         series: [{ name: 'Unidades', data: topUnids }],
         chart: { ...advBaseOptions().chart, type: 'bar', height: dynH },
         plotOptions: { bar: { horizontal: true, borderRadius: 4, barHeight: '60%' } },
         colors: ['#8b5cf6'],
         xaxis: { categories: topLabels, labels: { style: { colors: ADV.textColor, fontSize: '11px' } }, axisBorder: { show: false }, axisTicks: { show: false } },
-        yaxis: { labels: { style: { colors: '#374151', fontSize: '11px' } } },
-      }).render();
+        yaxis: { labels: { style: { colors: document.body.classList.contains('dark') ? '#cbd5e1' : '#374151', fontSize: '11px' } } },
+      });
+      chart.render();
+      window.chartInstances.push(chart);
     }
   }
 
@@ -394,9 +412,9 @@
 
     const elSR = document.getElementById('advChartStockRisk');
     if (elSR && stockLabels.length) {
-      const dynH = Math.max(stockLabels.length * 36 + 60, 200);
+      const dynH = Math.max(stockLabels.length * 36 + 60, 260);
       elSR.style.height = dynH + 'px';
-      new ApexCharts(elSR, {
+      const chart = new ApexCharts(elSR, {
         ...advBaseOptions(),
         series: [{ name: 'Stock', data: stockVals }],
         chart: { ...advBaseOptions().chart, type: 'bar', height: dynH },
@@ -404,15 +422,17 @@
         plotOptions: { bar: { horizontal: true, borderRadius: 4, distributed: true, barHeight: '60%' } },
         legend: { show: false },
         xaxis: { categories: stockLabels, labels: { style: { colors: ADV.textColor, fontSize: '10px' } }, axisBorder: { show: false }, axisTicks: { show: false } },
-        yaxis: { labels: { style: { colors: '#374151', fontSize: '10px' } } },
-      }).render();
+        yaxis: { labels: { style: { colors: document.body.classList.contains('dark') ? '#cbd5e1' : '#374151', fontSize: '10px' } } },
+      });
+      chart.render();
+      window.chartInstances.push(chart);
     }
 
-    // RFM barras
+    // RFM barras - Altura fija
     const elRFM = document.getElementById('advChartRFM');
     if (elRFM && rawClientes.length) {
       const rfmColors = montos.map(v => v > 5000 ? '#8b5cf6' : v >= 2000 ? '#10b981' : '#9ca3af');
-      new ApexCharts(elRFM, {
+      const chart = new ApexCharts(elRFM, {
         ...advBaseOptions(),
         series: [{ name: 'S/.', data: montos }],
         chart: { ...advBaseOptions().chart, type: 'bar', height: 220 },
@@ -421,10 +441,12 @@
         legend: { show: false },
         xaxis: { categories: rawClientes.map(r => r.cliente), labels: { style: { colors: ADV.textColor, fontSize: '9px' }, rotate: -35 }, axisBorder: { show: false }, axisTicks: { show: false } },
         yaxis: { labels: { style: { colors: ADV.textColor }, formatter: v => 'S/'+v.toLocaleString() } },
-      }).render();
+      });
+      chart.render();
+      window.chartInstances.push(chart);
     }
 
-    // Proyección
+    // Proyección - Altura fija
     let dataDia = [];
     try { const bd = JSON.parse(document.getElementById('dashboard-bootstrap')?.textContent || '{}'); dataDia = (bd.dataDia || []).slice(-4); } catch(e){}
     const avgD = dataDia.length ? dataDia.reduce((a,b)=>a+b,0)/dataDia.length : 0;
@@ -432,22 +454,26 @@
     const reales  = [...dataDia, null, null, null];
     const proyec  = [null, null, null, dataDia[dataDia.length-1]||avgD, avgD*1.05, avgD*1.08, avgD*1.12];
     const elPr = document.getElementById('advChartProyec');
-    if (elPr) new ApexCharts(elPr, {
-      ...advBaseOptions(),
-      series: [
-        { name: 'Reales',     data: reales },
-        { name: 'Proyección', data: proyec }
-      ],
-      chart: { ...advBaseOptions().chart, type: 'line', height: 180 },
-      colors: ['#6366f1', '#10b981'],
-      stroke: { width: 2, curve: 'smooth', dashArray: [0, 6] },
-      markers: { size: 3 },
-      xaxis: { categories: semLabels, labels: { style: { colors: ADV.textColor, fontSize: '10px' } }, axisBorder: { show: false }, axisTicks: { show: false } },
-      yaxis: { labels: { style: { colors: ADV.textColor }, formatter: v => v ? 'S/'+v.toLocaleString() : '' } },
-      legend: { fontSize: '11px', labels: { colors: ADV.textColor } },
-    }).render();
+    if (elPr) {
+      const chart = new ApexCharts(elPr, {
+        ...advBaseOptions(),
+        series: [
+          { name: 'Reales',     data: reales },
+          { name: 'Proyección', data: proyec }
+        ],
+        chart: { ...advBaseOptions().chart, type: 'line', height: 180 },
+        colors: ['#6366f1', '#10b981'],
+        stroke: { width: 2, curve: 'smooth', dashArray: [0, 6] },
+        markers: { size: 3 },
+        xaxis: { categories: semLabels, labels: { style: { colors: ADV.textColor, fontSize: '10px' } }, axisBorder: { show: false }, axisTicks: { show: false } },
+        yaxis: { labels: { style: { colors: ADV.textColor }, formatter: v => v ? 'S/'+v.toLocaleString() : '' } },
+        legend: { fontSize: '11px', labels: { colors: ADV.textColor } },
+      });
+      chart.render();
+      window.chartInstances.push(chart);
+    }
 
-    // ABC donut
+    // ABC donut - Altura fija
     const totalIng = rawTop.reduce((a,r) => a+parseFloat(r.ingreso), 0);
     let acum=0, cA=0, cB=0, cC=0;
     rawTop.forEach(r => {
@@ -456,14 +482,25 @@
       if (pct<=80) cA++; else if(pct<=95) cB++; else cC++;
     });
     const elABC = document.getElementById('advChartABC');
-    if (elABC) new ApexCharts(elABC, {
-      ...advBaseOptions(),
-      series: [cA, cB, cC],
-      chart: { ...advBaseOptions().chart, type: 'donut', height: 180 },
-      labels: [`A (${cA} prod)`, `B (${cB} prod)`, `C (${cC} prod)`],
-      colors: ['#10b981', '#f59e0b', '#ef4444'],
-      legend: { position: 'bottom', fontSize: '11px', labels: { colors: ADV.textColor } },
-      plotOptions: { pie: { donut: { size: '58%' } } },
-    }).render();
+    if (elABC) {
+      const chart = new ApexCharts(elABC, {
+        chart: {
+          type: 'donut',
+          height: 180,
+          fontFamily: advBaseOptions().chart.fontFamily,
+          background: advBaseOptions().chart.background,
+          toolbar: { show: false }
+        },
+        theme: advBaseOptions().theme,
+        tooltip: advBaseOptions().tooltip,
+        series: [cA, cB, cC],
+        labels: [`A (${cA} prod)`, `B (${cB} prod)`, `C (${cC} prod)`],
+        colors: ['#10b981', '#f59e0b', '#ef4444'],
+        legend: { position: 'bottom', fontSize: '11px', labels: { colors: ADV.textColor } },
+        plotOptions: { pie: { donut: { size: '58%' } } },
+      });
+      chart.render();
+      window.chartInstances.push(chart);
+    }
   }
 })();

@@ -1,29 +1,45 @@
 /**
+ * public/js/auth/login.js
  * Vista login: cámara + captura facial y auto-cierre del toast de aviso.
  * Requiere face-api + face-auth cargados antes.
+ * Fix: botón de captura deshabilitado hasta que la cámara esté activa.
  */
 document.addEventListener("DOMContentLoaded", function () {
-  var classic = document.getElementById("loginClassicPanel");
-  var facePanel = document.getElementById("loginFacePanel");
-  var btnShowFace = document.getElementById("btnShowFaceLogin");
-  var btnHideFace = document.getElementById("btnHideFaceLogin");
+  var viewCredentials = document.getElementById("loginCredentialsView");
+  var viewFacial      = document.getElementById("loginFacialView");
+  var btnShowFace     = document.getElementById("btnShowFaceLogin");
+  var btnHideFace     = document.getElementById("btnHideFaceLogin");
+  var btnFace         = document.getElementById("btnFaceLogin");
 
-  if (btnShowFace && facePanel && classic) {
-    btnShowFace.addEventListener("click", function () {
-      classic.setAttribute("hidden", "");
-      facePanel.removeAttribute("hidden");
-      btnShowFace.setAttribute("aria-expanded", "true");
-      facePanel.scrollIntoView({ behavior: "smooth", block: "nearest" });
-    });
-  }
-  if (btnHideFace && facePanel && classic) {
-    btnHideFace.addEventListener("click", function () {
+  // Estado del componente: 'credentials' | 'facial'
+  var state = 'credentials';
+
+  function renderState() {
+    if (state === 'credentials') {
+      if (viewCredentials) viewCredentials.style.display = 'block';
+      if (viewFacial) viewFacial.style.display = 'none';
       if (typeof faceAuthStopCamera === "function") {
         faceAuthStopCamera("videoLogin");
       }
-      facePanel.setAttribute("hidden", "");
-      classic.removeAttribute("hidden");
-      if (btnShowFace) btnShowFace.setAttribute("aria-expanded", "false");
+      if (btnFace) btnFace.disabled = true;
+    } else {
+      if (viewCredentials) viewCredentials.style.display = 'none';
+      if (viewFacial) viewFacial.style.display = 'block';
+      if (btnFace) btnFace.disabled = true;
+    }
+  }
+
+  if (btnShowFace) {
+    btnShowFace.addEventListener("click", function () {
+      state = 'facial';
+      renderState();
+    });
+  }
+
+  if (btnHideFace) {
+    btnHideFace.addEventListener("click", function () {
+      state = 'credentials';
+      renderState();
     });
   }
 
@@ -31,18 +47,21 @@ document.addEventListener("DOMContentLoaded", function () {
     faceAuthStopCamera("videoLogin");
     faceAuthInitCamera("videoLogin")
       .then(function () {
+        // Cámara activa: habilitar captura
+        if (btnFace) btnFace.disabled = false;
         return faceAuthStartLandmarkOverlay("videoLogin", "canvasFaceLogin");
       })
       .catch(function (e) {
         console.error(e);
         showToast(e.message || String(e), "warn");
+        // En caso de error mantener deshabilitado
+        if (btnFace) btnFace.disabled = true;
       });
   }
 
   var btnEnc = document.getElementById("btnEncenderLogin");
   if (btnEnc) btnEnc.addEventListener("click", encenderLogin);
 
-  var btnFace = document.getElementById("btnFaceLogin");
   if (btnFace) {
     btnFace.addEventListener("click", function () {
       var btn = this;

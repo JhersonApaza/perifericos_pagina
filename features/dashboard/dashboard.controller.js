@@ -32,7 +32,6 @@ class DashboardController {
 
     // Gráficos originales
     const ventasDia       = await this.modelo.ventasPorDia(30);
-    const ventasCategoria = await this.modelo.ventasPorCategoria(30);
     const statsVentas     = await this.modelo.statsVentas();
 
     // Nuevos gráficos
@@ -45,9 +44,7 @@ class DashboardController {
     const mlPrecioStock   = await this.modelo.precioVsStock(sessionUid, true);
 
     const labelsDia  = ventasDia.map(r => r.dia);
-    const dataDia    = ventasDia.map(r => parseFloat(r.total_monto));
-    const labelsTipo = ventasCategoria.map(r => r.categoria);
-    const dataTipo   = ventasCategoria.map(r => parseFloat(r.total_monto));
+    const dataDia    = ventasDia.map(r => parseFloat(r.total_monto) || 0);
 
     const toast_ok   = req.session.toast_ok   || '';
     const toast_warn = req.session.toast_warn || '';
@@ -60,12 +57,10 @@ class DashboardController {
       nombreUsuario,
       labelsDia,
       dataDia,
-      labelsTipo,
-      dataTipo,
       statsVentas,
       totalProductos,
       pareto,
-      heatmap:        JSON.stringify(heatmap),
+      heatmap,
       ranking,
       stockAlertas,
       trabajador_id_actual: sessionUid,

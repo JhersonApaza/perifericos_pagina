@@ -128,58 +128,85 @@
   border-color: #a5b4fc;
   color: #4f46e5;
 }
+/* Dark mode para tabs de análisis avanzado */
+body.dark .adv-tab { border-color: rgba(255,255,255,0.1); color: #94a3b8; }
+body.dark .adv-tab:hover { border-color: #818cf8; color: #c7d2fe; }
+body.dark .adv-tab--active { background: rgba(99,102,241,0.2); border-color: #6366f1; color: #a5b4fc; }
 .adv-panel { display: none; }
 .adv-panel--active { display: block; }
 
-  body.dark { background-color: #0f172a; color: #e2e8f0; }
-  body.dark header { background: rgba(15,23,42,0.85) !important; border-color: #1e293b !important; }
+  body.dark { background-color: #0b0f19 !important; color: #e2e8f0; }
+  body.dark header { background: rgba(11,15,25,0.85) !important; border-color: #1e293b !important; }
   body.dark header h1 { color: #f1f5f9 !important; }
   body.dark header p { color: #94a3b8 !important; }
   body.dark #dark-mode-toggle { background: #1e293b !important; border-color: #334155 !important; color: #fbbf24 !important; }
-  body.dark aside { background-color: #020617 !important; }
-  body.dark main { background-color: #0f172a !important; }
+  /* El sidebar conserva siempre el color #111827 (gray-900), sin importar el modo */
+  body.dark main { background-color: #0b0f19 !important; }
 
-  /* Cards y paneles */
-  body.dark .bg-white { background-color: #1e293b !important; border-color: #334155 !important; }
-  body.dark .bg-gray-50 { background-color: #0f172a !important; }
-  body.dark .bg-gray-50\/50 { background-color: #0f172a !important; }
-  body.dark .border-gray-100, body.dark .border-gray-200 { border-color: #334155 !important; }
+  /* Cards y paneles con Glassmorfismo Premium en Modo Oscuro */
+  body.dark .bg-white, body.dark .glass-panel {
+    background-color: rgba(30, 41, 59, 0.7) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.35) !important;
+  }
+  body.dark .bg-gray-50 { background-color: rgba(15, 23, 42, 0.5) !important; }
+  body.dark .bg-gray-50\/50 { background-color: rgba(15, 23, 42, 0.3) !important; }
+  body.dark .border-gray-100, body.dark .border-gray-200 { border-color: rgba(255, 255, 255, 0.08) !important; }
 
   /* Textos */
-  body.dark .text-gray-900 { color: #f1f5f9 !important; }
+  body.dark .text-gray-900, body.dark .text-gray-955 { color: #f1f5f9 !important; }
   body.dark .text-gray-700 { color: #cbd5e1 !important; }
   body.dark .text-gray-600 { color: #94a3b8 !important; }
-  body.dark .text-gray-500 { color: #64748b !important; }
-  body.dark .text-gray-400 { color: #475569 !important; }
+  body.dark .text-gray-500 { color: #94a3b8 !important; }
+  body.dark .text-gray-400 { color: #64748b !important; }
+  /* KPI stat values en modo oscuro */
+  body.dark h3.text-gray-900 { color: #f1f5f9 !important; }
+  /* Badges y pildoras en modo oscuro */
+  body.dark .bg-indigo-50 { background-color: rgba(99,102,241,0.15) !important; }
+  body.dark .bg-amber-50  { background-color: rgba(245,158,11,0.15) !important; }
+  body.dark .bg-emerald-50{ background-color: rgba(16,185,129,0.15) !important; }
+  body.dark .bg-purple-50  { background-color: rgba(139,92,246,0.15) !important; }
+  body.dark .bg-gray-50\/80 { background-color: rgba(15,23,42,0.5) !important; }
+  /* Mini-KPI blocks en análisis avanzado */
+  body.dark .bg-gray-50.border { background-color: rgba(15,23,42,0.6) !important; border-color: rgba(255,255,255,0.08) !important; }
+  body.dark .border-gray-200 { border-color: rgba(255,255,255,0.08) !important; }
 
   /* Inputs y selects */
-  body.dark input, body.dark select {
-    background-color: #0f172a !important;
-    border-color: #334155 !important;
+  body.dark input, body.dark select, body.dark textarea {
+    background-color: rgba(15, 23, 42, 0.6) !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
     color: #f1f5f9 !important;
   }
   body.dark input::placeholder { color: #475569 !important; }
 
-  /* Producto cards */
-  body.dark .rounded-xl.border { background-color: #1e293b !important; border-color: #334155 !important; }
-  body.dark .rounded-xl.border:hover { border-color: #10b981 !important; }
+  /* Producto cards (solo en página de ventas/catálogo) */
+  body.dark #pgrid .rounded-xl.border { background-color: rgba(30, 41, 59, 0.4) !important; border-color: rgba(255, 255, 255, 0.06) !important; }
+  body.dark #pgrid .rounded-xl.border:hover { border-color: #10b981 !important; }
 
   /* Carrito items */
-  body.dark #cart-body .bg-white { background-color: #1e293b !important; }
+  body.dark #cart-body .bg-white { background-color: rgba(30, 41, 59, 0.6) !important; }
 
   /* Resumen */
-  body.dark #resumen { background-color: #1e293b !important; border-color: #334155 !important; }
-
-  /* Tabs */
-  body.dark .border-gray-200 { border-color: #334155 !important; }
+  body.dark #resumen { background-color: rgba(30, 41, 59, 0.8) !important; border-color: rgba(255, 255, 255, 0.08) !important; }
 
   /* Tabla historial */
-  body.dark thead tr { background-color: #1e293b !important; }
-  body.dark tbody tr:hover { background-color: #1e293b !important; }
+  body.dark thead tr { background-color: rgba(15, 23, 42, 0.6) !important; }
+  body.dark tbody tr:hover { background-color: rgba(30, 41, 59, 0.4) !important; }
   body.dark td, body.dark th { color: #cbd5e1 !important; }
 
   /* Botones qty */
-  body.dark .bg-gray-50.p-1 { background-color: #0f172a !important; border-color: #334155 !important; }
-  body.dark .bg-gray-50.p-1 button { background-color: #1e293b !important; border-color: #334155 !important; color: #e2e8f0 !important; }
+  body.dark .bg-gray-50.p-1 { background-color: rgba(15, 23, 42, 0.8) !important; border-color: rgba(255, 255, 255, 0.08) !important; }
+  body.dark .bg-gray-50.p-1 button { background-color: rgba(30, 41, 59, 0.8) !important; border-color: rgba(255, 255, 255, 0.08) !important; color: #e2e8f0 !important; }
+
+  /* SweetAlert oscuro */
+  .swal2-popup.swal2-modal {
+    background-color: #1e293b !important;
+    color: #f1f5f9 !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 1.5rem !important;
+  }
+  .swal2-title, .swal2-html-container { color: #f1f5f9 !important; }
 
   body, header, aside, main { transition: background-color 0.3s ease, color 0.2s ease; }

@@ -1,10 +1,18 @@
-<div id="global-loader" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gray-50/90 backdrop-blur-md transition-opacity duration-500">
+<%
+  const isLoaderDark = (typeof forceDark !== 'undefined' && forceDark);
+  const bgClass = isLoaderDark ? 'bg-slate-950/95' : 'bg-slate-50/90 dark:bg-slate-950/95';
+  const trackClass = isLoaderDark ? 'border-indigo-900/50' : 'border-indigo-200 dark:border-indigo-900/50';
+  const spinnerClass = isLoaderDark ? 'border-indigo-400' : 'border-indigo-600 dark:border-indigo-400';
+  const textClass = isLoaderDark ? 'text-indigo-400' : 'text-indigo-600 dark:text-indigo-400';
+  const labelClass = isLoaderDark ? 'text-indigo-300' : 'text-gray-500 dark:text-indigo-300';
+%>
+<div id="global-loader" class="fixed inset-0 z-50 flex flex-col items-center justify-center <%= bgClass %> backdrop-blur-md transition-opacity duration-500">
   <div class="relative flex items-center justify-center w-20 h-20">
-    <div class="absolute inset-0 border-4 border-indigo-200 rounded-full"></div>
-    <div class="absolute inset-0 border-4 border-indigo-600 rounded-full border-t-transparent animate-spin"></div>
-    <span class="text-indigo-600 font-bold text-sm absolute">PA</span>
+    <div class="absolute inset-0 border-4 <%= trackClass %> rounded-full"></div>
+    <div class="absolute inset-0 border-4 <%= spinnerClass %> rounded-full border-t-transparent animate-spin"></div>
+    <span class="<%= textClass %> font-extrabold text-sm absolute">PA</span>
   </div>
-  <p class="mt-4 text-sm font-medium text-gray-500 animate-pulse">Cargando aplicación...</p>
+  <p class="mt-4 text-sm font-semibold <%= labelClass %> animate-pulse tracking-wide">Iniciando reconocimiento...</p>
 </div>
 
 <script>
